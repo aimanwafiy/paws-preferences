@@ -1,11 +1,12 @@
 * {
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
     margin: 0;
-    background: #332d2d;
+    background: #1f1f1f; /* softer than brownish */
     display: flex;
     justify-content: center;
 }
@@ -17,10 +18,20 @@ body {
     text-align: center;
 }
 
-h1, h2 {
-    color: white;
-    margin-bottom: 5px;
+h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: antiquewhite;
 }
+
+h2 {
+    font-size: 14px;
+    font-weight: 400;
+    color: #bdbdbd;
+    margin-top: 0;
+}
+
 
 #progress {
     color: #a7a3a3;
@@ -38,11 +49,11 @@ h1, h2 {
     width: 100%;
     height: 100%;
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     touch-action: none;
-    transition: transform 0.3s ease;
+    transition: transform 0.25s ease;
     cursor: grab;
 }
 
@@ -58,18 +69,18 @@ h1, h2 {
 
 .buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 10px;
 }
 
 button {
-    font-size: 28px;
-    padding: 20px;
-    border: none;
-    border-radius: 10%;
-    cursor: pointer;
-    position: relative;
-    top: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    flex: 1;
+    font-size: 14px;
+    padding: 12px 12px;
+    border-radius: 10px;
+    font-weight: 500;
+    box-shadow: none;
 }
 
 #like {
@@ -78,7 +89,8 @@ button {
 }
 
 #dislike {
-    background: #ddd;
+    background: #2a2a2a;
+    color: #bbb;
 }
 
 .hidden {
@@ -111,33 +123,32 @@ button {
 }
 
 .hint {
-    color: #bdbdbd;
-    font-size: 14px;
-    margin-top: 4px;
+    color: #8f8f8f;
+    font-size: 13px;
+    margin: 10px 0 0;
 }
 
 .swipe-label {
     position: absolute;
-    top: 20px;
-    padding: 8px 14px;
-    font-size: 20px;
-    font-weight: bold;
-    border-radius: 8px;
+    top: 18px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 999px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s;
+    transition: opacity 0.15s ease;
+    letter-spacing: 1px;
 }
 
 .swipe-like {
-    right: 20px;
+    right: 16px;
     color: #ff5c8a;
-    border: 3px solid #ff5c8a;
-    transform: rotate(10deg);
+    background: rgba(255, 92, 138, 0.12);
 }
 
 .swipe-nope {
-    left: 20px;
-    color: #888;
-    border: 3px solid #888;
-    transform: rotate(-10deg);
+    left: 16px;
+    color: #aaa;
+    background: rgba(255, 255, 255, 0.12);
 }
