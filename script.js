@@ -1,32 +1,25 @@
 const TOTAL_CATS = 10;
-const cards = [];
-const likedCats = [];
+const cards = [];       // Stores preloaded Image objects
+const likedCats = [];   // Stores swiped-right Image objects
 let currentIndex = 0;
 
-// ----------------- CARD FUNCTION START -----------------
 const container = document.getElementById("card-container");
 const progress = document.getElementById("progress");
 const likeBtn = document.getElementById("like");
 const dislikeBtn = document.getElementById("dislike");
 
-// Preload images
-function preloadImages(urls) {
-  urls.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-}
-
-// Generate cat image URLs from Cataas API
+// ----------------- PRELOAD IMAGES -----------------
 for (let i = 0; i < TOTAL_CATS; i++) {
-  cards.push(`https://cataas.com/cat?width=400&height=400&type=square&${i}`);
+  const img = new Image();
+  img.src = `https://cataas.com/cat?width=400&height=400&type=square&${i}`;
+  cards.push(img);
 }
-preloadImages(cards);
 
-// Create cards in normal order
-cards.forEach((src) => {
+// ----------------- CREATE CARDS -----------------
+cards.forEach((imgObj, index) => {
   const card = document.createElement("div");
   card.className = "card";
+  card.dataset.index = index; // store index to reference exact image
 
   const likeLabel = document.createElement("div");
   likeLabel.className = "swipe-label swipe-like";
@@ -36,20 +29,16 @@ cards.forEach((src) => {
   nopeLabel.className = "swipe-label swipe-nope";
   nopeLabel.textContent = "DISLIKE";
 
-  const img = document.createElement("img");
-  img.src = src;
-  img.loading = "lazy";
-
   card.appendChild(likeLabel);
   card.appendChild(nopeLabel);
-  card.appendChild(img);
+  card.appendChild(imgObj.cloneNode()); // clone preloaded image
 
   container.appendChild(card);
-  addSwipe(card, src);  // Pass the exact image URL function
+  addSwipe(card);
 });
 
 // ----------------- SWIPE FUNCTION -----------------
-function addSwipe(card, imgSrc) {
+function addSwipe(card) {
   let startX = 0;
   let currentX = 0;
   let isDragging = false;
@@ -65,7 +54,6 @@ function addSwipe(card, imgSrc) {
 
   card.addEventListener("pointermove", (e) => {
     if (!isDragging) return;
-
     currentX = e.clientX;
     const diff = currentX - startX;
 
@@ -82,20 +70,15 @@ function addSwipe(card, imgSrc) {
 
   card.addEventListener("pointerup", () => {
     if (!isDragging) return;
-
     isDragging = false;
     const diff = currentX - startX;
 
     likeLabel.style.opacity = 0;
     nopeLabel.style.opacity = 0;
 
-    if (diff > 120) {
-      swipeRight(card, imgSrc);
-    } else if (diff < -120) {
-      swipeLeft(card);
-    } else {
-      card.style.transform = "";
-    }
+    if (diff > 120) swipeRight(card);
+    else if (diff < -120) swipeLeft(card);
+    else card.style.transform = "";
   });
 
   card.addEventListener("pointercancel", () => {
@@ -106,20 +89,19 @@ function addSwipe(card, imgSrc) {
   });
 }
 
-// Swipe right → Like
-function swipeRight(card, imgSrc) {
-  likedCats.push(imgSrc);  // Function to store the exact image after swipe
+// ----------------- SWIPE ACTIONS -----------------
+function swipeRight(card) {
+  const index = card.dataset.index;
+  likedCats.push(cards[index]); // store the exact preloaded Image object
   card.style.transform = "translateX(1000px)";
   nextCard(card);
 }
 
-// Swipe left → Dislike
 function swipeLeft(card) {
   card.style.transform = "translateX(-1000px)";
   nextCard(card);
 }
 
-// Move to next card
 function nextCard(card) {
   setTimeout(() => {
     card.remove();
@@ -134,10 +116,10 @@ function updateProgress() {
   progress.textContent = `${Math.min(currentIndex + 1, TOTAL_CATS)} / ${TOTAL_CATS}`;
 }
 
-// Like / Dislike buttons
+// ----------------- BUTTONS -----------------
 likeBtn.onclick = () => {
   const card = container.lastElementChild;
-  if (card) swipeRight(card, card.querySelector("img").src);
+  if (card) swipeRight(card);
 };
 
 dislikeBtn.onclick = () => {
@@ -145,7 +127,7 @@ dislikeBtn.onclick = () => {
   if (card) swipeLeft(card);
 };
 
-// ----------------- SUMMARY -----------------
+// ----------------- SHOW SUMMARY -----------------
 function showSummary() {
   document.querySelector(".app").classList.add("hidden");
   const summary = document.getElementById("summary");
@@ -155,13 +137,32 @@ function showSummary() {
   const likedContainer = document.getElementById("liked-cats");
   likedContainer.innerHTML = "";
 
-  likedCats.forEach((src) => {
-    const img = document.createElement("img");
-    img.src = src;
-
+  likedCats.forEach((imgObj) => {
+    const img = imgObj.cloneNode();
     img.style.cursor = "pointer";
+
+    // Click to open large view
     img.onclick = () => {
-      window.open(src, "_blank");
+      const modal = document.createElement("div");
+      modal.style.position = "fixed";
+      modal.style.top = "0";
+      modal.style.left = "0";
+      modal.style.width = "100%";
+      modal.style.height = "100%";
+      modal.style.backgroundColor = "rgba(0,0,0,0.8)";
+      modal.style.display = "flex";
+      modal.style.alignItems = "center";
+      modal.style.justifyContent = "center";
+      modal.style.cursor = "pointer";
+      modal.onclick = () => modal.remove();
+
+      const largeImg = imgObj.cloneNode();
+      largeImg.style.maxWidth = "90%";
+      largeImg.style.maxHeight = "90%";
+      largeImg.style.borderRadius = "12px";
+      modal.appendChild(largeImg);
+
+      document.body.appendChild(modal);
     };
 
     likedContainer.appendChild(img);
