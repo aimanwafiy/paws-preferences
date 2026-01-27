@@ -3,6 +3,7 @@ const cards = [];
 const likedCats = [];
 let currentIndex = 0;
 
+// ----------------- CARD FUNCTION START -----------------
 const container = document.getElementById("card-container");
 const progress = document.getElementById("progress");
 const likeBtn = document.getElementById("like");
@@ -27,20 +28,34 @@ cards.reverse().forEach((src) => {
   const card = document.createElement("div");
   card.className = "card";
 
+  const likeLabel = document.createElement("div");
+  likeLabel.className = "swipe-label swipe-like";
+  likeLabel.textContent = "LIKE";
+
+  const nopeLabel = document.createElement("div");
+  nopeLabel.className = "swipe-label swipe-nope";
+  nopeLabel.textContent = "DISLIKE";
+
   const img = document.createElement("img");
   img.src = src;
   img.loading = "lazy";
 
+  card.appendChild(likeLabel);
+  card.appendChild(nopeLabel);
   card.appendChild(img);
-  container.appendChild(card);
 
+  container.appendChild(card);
   addSwipe(card, src);
 });
+
 
 function addSwipe(card, imgSrc) {
   let startX = 0;
   let currentX = 0;
   let isDragging = false;
+
+  const likeLabel = card.querySelector(".swipe-like");
+  const nopeLabel = card.querySelector(".swipe-nope");
 
   card.addEventListener("pointerdown", (e) => {
     startX = e.clientX;
@@ -55,6 +70,14 @@ function addSwipe(card, imgSrc) {
     const diff = currentX - startX;
 
     card.style.transform = `translateX(${diff}px) rotate(${diff / 15}deg)`;
+
+    if (diff > 0) {
+      likeLabel.style.opacity = Math.min(diff / 100, 1);
+      nopeLabel.style.opacity = 0;
+    } else {
+      nopeLabel.style.opacity = Math.min(Math.abs(diff) / 100, 1);
+      likeLabel.style.opacity = 0;
+    }
   });
 
   card.addEventListener("pointerup", () => {
@@ -62,6 +85,9 @@ function addSwipe(card, imgSrc) {
 
     isDragging = false;
     const diff = currentX - startX;
+
+    likeLabel.style.opacity = 0;
+    nopeLabel.style.opacity = 0;
 
     if (diff > 120) {
       swipeRight(card, imgSrc);
@@ -75,6 +101,8 @@ function addSwipe(card, imgSrc) {
   card.addEventListener("pointercancel", () => {
     isDragging = false;
     card.style.transform = "";
+    likeLabel.style.opacity = 0;
+    nopeLabel.style.opacity = 0;
   });
 }
 
@@ -97,6 +125,8 @@ function nextCard(card) {
     if (currentIndex === TOTAL_CATS) showSummary();
   }, 300);
 }
+
+// ----------------- CARD FUNCTION END -----------------
 
 // Called out progress value e.g. 1/10
 function updateProgress() {

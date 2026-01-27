@@ -109,3 +109,35 @@ button {
     object-fit: cover;
     border-radius: 12px;
 }
+
+.hint {
+    color: #bdbdbd;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.swipe-label {
+    position: absolute;
+    top: 20px;
+    padding: 8px 14px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.swipe-like {
+    right: 20px;
+    color: #ff5c8a;
+    border: 3px solid #ff5c8a;
+    transform: rotate(10deg);
+}
+
+.swipe-nope {
+    left: 20px;
+    color: #888;
+    border: 3px solid #888;
+    transform: rotate(-10deg);
+}
