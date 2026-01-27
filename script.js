@@ -9,7 +9,7 @@ const progress = document.getElementById("progress");
 const likeBtn = document.getElementById("like");
 const dislikeBtn = document.getElementById("dislike");
 
-// Function to get a preload image
+// Preload images
 function preloadImages(urls) {
   urls.forEach(src => {
     const img = new Image();
@@ -17,14 +17,14 @@ function preloadImages(urls) {
   });
 }
 
+// Generate cat image URLs from Cataas API
 for (let i = 0; i < TOTAL_CATS; i++) {
   cards.push(`https://cataas.com/cat?width=400&height=400&type=square&${i}`);
 }
-// Call back the preload images to make it load faster
 preloadImages(cards);
 
-// Create cards with images and add swipe functionality
-cards.reverse().forEach((src) => {
+// Create cards in normal order
+cards.forEach((src) => {
   const card = document.createElement("div");
   card.className = "card";
 
@@ -45,10 +45,10 @@ cards.reverse().forEach((src) => {
   card.appendChild(img);
 
   container.appendChild(card);
-  addSwipe(card, src);
+  addSwipe(card, src);  // Pass the exact image URL function
 });
 
-
+// ----------------- SWIPE FUNCTION -----------------
 function addSwipe(card, imgSrc) {
   let startX = 0;
   let currentX = 0;
@@ -106,17 +106,20 @@ function addSwipe(card, imgSrc) {
   });
 }
 
+// Swipe right → Like
 function swipeRight(card, imgSrc) {
+  likedCats.push(imgSrc);  // Function to store the exact image after swipe
   card.style.transform = "translateX(1000px)";
-  likedCats.push(imgSrc);
   nextCard(card);
 }
 
+// Swipe left → Dislike
 function swipeLeft(card) {
   card.style.transform = "translateX(-1000px)";
   nextCard(card);
 }
 
+// Move to next card
 function nextCard(card) {
   setTimeout(() => {
     card.remove();
@@ -126,36 +129,41 @@ function nextCard(card) {
   }, 300);
 }
 
-// ----------------- CARD FUNCTION END -----------------
-
-// Called out progress value e.g. 1/10
+// ----------------- PROGRESS -----------------
 function updateProgress() {
-  progress.textContent = `${Math.min(
-    currentIndex + 1,
-    TOTAL_CATS
-  )} / ${TOTAL_CATS}`;
+  progress.textContent = `${Math.min(currentIndex + 1, TOTAL_CATS)} / ${TOTAL_CATS}`;
 }
 
+// Like / Dislike buttons
 likeBtn.onclick = () => {
-  const card = document.querySelector(".card:last-child");
+  const card = container.lastElementChild;
   if (card) swipeRight(card, card.querySelector("img").src);
 };
 
 dislikeBtn.onclick = () => {
-  const card = document.querySelector(".card:last-child");
+  const card = container.lastElementChild;
   if (card) swipeLeft(card);
 };
 
-// Show summary of liked cats with their count at the end of swiping
+// ----------------- SUMMARY -----------------
 function showSummary() {
   document.querySelector(".app").classList.add("hidden");
-  document.getElementById("summary").classList.remove("hidden");
+  const summary = document.getElementById("summary");
+  summary.classList.remove("hidden");
   document.getElementById("like-count").textContent = likedCats.length;
 
   const likedContainer = document.getElementById("liked-cats");
+  likedContainer.innerHTML = "";
+
   likedCats.forEach((src) => {
     const img = document.createElement("img");
     img.src = src;
+
+    img.style.cursor = "pointer";
+    img.onclick = () => {
+      window.open(src, "_blank");
+    };
+
     likedContainer.appendChild(img);
   });
 }
