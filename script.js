@@ -1,6 +1,6 @@
 const TOTAL_CATS = 10;
-const cards = [];       // Stores preloaded Image objects
-const likedCats = [];   // Stores swiped-right Image objects
+const cards = [];     
+const likedCats = [];   
 let currentIndex = 0;
 
 const container = document.getElementById("card-container");
@@ -19,7 +19,7 @@ for (let i = 0; i < TOTAL_CATS; i++) {
 cards.forEach((imgObj, index) => {
   const card = document.createElement("div");
   card.className = "card";
-  card.dataset.index = index; // store index to reference exact image
+  card.dataset.index = index;
 
   const likeLabel = document.createElement("div");
   likeLabel.className = "swipe-label swipe-like";
@@ -31,7 +31,7 @@ cards.forEach((imgObj, index) => {
 
   card.appendChild(likeLabel);
   card.appendChild(nopeLabel);
-  card.appendChild(imgObj.cloneNode()); // clone preloaded image
+  card.appendChild(imgObj.cloneNode());
 
   container.appendChild(card);
   addSwipe(card);
@@ -92,7 +92,7 @@ function addSwipe(card) {
 // ----------------- SWIPE ACTIONS -----------------
 function swipeRight(card) {
   const index = card.dataset.index;
-  likedCats.push(cards[index]); // store the exact preloaded Image object
+  likedCats.push(cards[index]);
   card.style.transform = "translateX(1000px)";
   nextCard(card);
 }
