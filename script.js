@@ -11,7 +11,10 @@ const dislikeBtn = document.getElementById("dislike");
 // ----------------- PRELOAD IMAGES -----------------
 for (let i = 0; i < TOTAL_CATS; i++) {
   const img = new Image();
-  img.src = `https://cataas.com/cat?width=400&height=400&type=square&${i}`;
+  img.src = `https://cataas.com/cat?width=800&height=800&type=square&${i}`;
+  if (i < 3) img.loading = "eager";
+  else img.loading = "lazy";  
+  img.decoding = "async";
   cards.push(img);
 }
 
