@@ -28,12 +28,12 @@ cards.forEach((imgObj, index) => {
   likeLabel.className = "swipe-label swipe-like";
   likeLabel.textContent = "LIKE";
 
-  const nopeLabel = document.createElement("div");
-  nopeLabel.className = "swipe-label swipe-nope";
-  nopeLabel.textContent = "DISLIKE";
+  const dislikeLabel = document.createElement("div");
+  dislikeLabel.className = "swipe-label swipe-dislike";
+  dislikeLabel.textContent = "DISLIKE";
 
   card.appendChild(likeLabel);
-  card.appendChild(nopeLabel);
+  card.appendChild(dislikeLabel);
   card.appendChild(imgObj.cloneNode());
 
   container.appendChild(card);
@@ -47,7 +47,7 @@ function addSwipe(card) {
   let isDragging = false;
 
   const likeLabel = card.querySelector(".swipe-like");
-  const nopeLabel = card.querySelector(".swipe-nope");
+  const dislikeLabel = card.querySelector(".swipe-dislike");
 
   card.addEventListener("pointerdown", (e) => {
     startX = e.clientX;
@@ -64,9 +64,9 @@ function addSwipe(card) {
 
     if (diff > 0) {
       likeLabel.style.opacity = Math.min(diff / 100, 1);
-      nopeLabel.style.opacity = 0;
+      dislikeLabel.style.opacity = 0;
     } else {
-      nopeLabel.style.opacity = Math.min(Math.abs(diff) / 100, 1);
+      dislikeLabel.style.opacity = Math.min(Math.abs(diff) / 100, 1);
       likeLabel.style.opacity = 0;
     }
   });
@@ -77,7 +77,7 @@ function addSwipe(card) {
     const diff = currentX - startX;
 
     likeLabel.style.opacity = 0;
-    nopeLabel.style.opacity = 0;
+    dislikeLabel.style.opacity = 0;
 
     if (diff > 120) swipeRight(card);
     else if (diff < -120) swipeLeft(card);
@@ -88,7 +88,7 @@ function addSwipe(card) {
     isDragging = false;
     card.style.transform = "";
     likeLabel.style.opacity = 0;
-    nopeLabel.style.opacity = 0;
+    dislikeLabel.style.opacity = 0;
   });
 }
 
